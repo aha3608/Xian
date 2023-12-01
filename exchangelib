@@ -1,0 +1,28 @@
+from exchangelib import Credentials, Account, DELEGATE
+
+def read_outlook_emails(email_address, password):
+    # Set up credentials
+    credentials = Credentials(email_address, password)
+
+    try:
+        # Connect to the Exchange server
+        account = Account(email_address, credentials=credentials, autodiscover=True, access_type=DELEGATE)
+
+        # Get the inbox folder
+        inbox = account.inbox
+
+        # Print basic information about the latest emails
+        for item in inbox.filter(is_read=False).order_by('-datetime_received')[:5]:  # Change the number to adjust the email count
+            print(f"Subject: {item.subject}")
+            print(f"From: {item.sender.email_address}")
+            print(f"Date: {item.datetime_received}")
+            print("="*50)
+
+    except Exception as e:
+        print(f"Error: {e}")
+
+# Example usage:
+email_address = 'your_email@example.com'
+email_password = 'your_email_password'
+
+read_outlook_emails(email_address, email_password)
